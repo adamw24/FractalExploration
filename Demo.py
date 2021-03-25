@@ -2,8 +2,7 @@ import pygame, sys
 from pygame.locals import *
 from tkinter import * 
 from math import *
-from pygame.event import wait
-
+from time import sleep
 
 
 BLACK = (0,0,0)
@@ -30,15 +29,13 @@ def drawArena():
 
 points = []
 
-length = 500
+offset = 60
 
-center = (window_width/2, window_height/8)
-left = (window_width/2-length*cos(pi/3),window_height/8 + length*sin(pi/3))
-right = (window_width/2+length*cos(pi/3),window_height/8 + length*sin(pi/3))
+length = 3*(window_height-2*offset)/(4*sin(pi/3))
 
-points.append(center)
-points.append(left)
-points.append(right)
+center = (window_width/2, offset)
+left = (window_width/2-length*cos(pi/3),offset + length*sin(pi/3))
+right = (window_width/2+length*cos(pi/3),offset + length*sin(pi/3))
 
 def nextIteration(num):
     i = 0
@@ -55,6 +52,10 @@ def nextIteration(num):
 
 
 def findNextPoints(temp_prev, temp_next, i):
+    for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
     midLeft = ((2*temp_prev[0] + temp_next[0])/3 , (2*temp_prev[1] + temp_next[1])/3)
     midRight = ((temp_prev[0] + 2*temp_next[0])/3 , (temp_prev[1] + 2*temp_next[1])/3)
     points.insert(i+1, midLeft)
@@ -64,6 +65,11 @@ def findNextPoints(temp_prev, temp_next, i):
     points.insert(i+2,midMid)
     points.insert(i+3, midRight)
 
+def resetPoints():
+    points.clear()
+    points.append(center)
+    points.append(left)
+    points.append(right)
 
 #Main Loop
 while True: 
@@ -72,16 +78,19 @@ while True:
             pygame.quit()
             sys.exit()
     num = 0
-    while num < 4:
+    resetPoints()
+    while num < 6:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
         drawArena()
-        num = nextIteration(num)
         pygame.draw.polygon(display_surf, WHITE, points, 1)
+        num = nextIteration(num)
         pygame.display.flip()
-        wait(1000)
-    points.clear()
-    points.append(center)
-    points.append(left)
-    points.append(right)
+        sleep(0.4)
+    sleep(1)
+  
     
 
 if __name__=='__main__':
