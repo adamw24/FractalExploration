@@ -96,14 +96,14 @@ while True:
                     next = points[i+1]
                 pygame.draw.line(display_surf, WHITE, points[i], next, width=1)  
                 pygame.display.flip()
-                sleep(0.05)
+                sleep(0.01)
         else:
             pygame.draw.polygon(display_surf, WHITE, points, 1)
         
         num = nextIteration(num)
         pygame.display.flip()
         sleep(1)
-    sleep(1)
+    sleep(2)
   
     
 
